@@ -31,7 +31,7 @@ Import Flow vào Node-RED từ tệp /server/nodered_flows.json.
 Kết nối và đồng bộ dữ liệu với Home Assistant.
 
 3. Cấu trúc thư mục (Directory Structure)
-
+'''
 ├── src/                    # Source code firmware (C++)
 │   ├── master/             # Gateway điều phối dữ liệu
 │   └── slave/              # Logic điều khiển ổ cắm đầu cuối
@@ -41,3 +41,4 @@ Kết nối và đồng bộ dữ liệu với Home Assistant.
 ├── server/                 # Cấu hình phía Server
 │   └── nodered/            # Flow xử lý dữ liệu và Dashboard
 └── README.md               # Hướng dẫn dự án
+'''
