@@ -1,0 +1,2332 @@
+[
+    {
+        "id": "78480a0d5830e0da",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "4f77d3609d667e2e",
+        "type": "mqtt out",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "topic": "group/4/switch",
+        "qos": "2",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "b67a3d5ab78b619f",
+        "x": 1220,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "99e8303e240bfe31",
+        "type": "mqtt in",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "topic": "group/4/slaver",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "b67a3d5ab78b619f",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 400,
+        "wires": [
+            [
+                "2151f539319c5998"
+            ]
+        ]
+    },
+    {
+        "id": "0a6148b289831b9d",
+        "type": "ui_switch",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "label": "Ổ điện 1",
+        "tooltip": "",
+        "group": "50f6a985550c885c",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "0",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "On",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "Off",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 600,
+        "y": 680,
+        "wires": [
+            [
+                "6ffc486310689877"
+            ]
+        ]
+    },
+    {
+        "id": "6ffc486310689877",
+        "type": "function",
+        "z": "78480a0d5830e0da",
+        "name": "function 2",
+        "func": "// Gộp topic (số 1) và payload (On/Off) thành một chuỗi\nmsg.payload = msg.topic + \":\" + msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 680,
+        "wires": [
+            [
+                "4f77d3609d667e2e"
+            ]
+        ]
+    },
+    {
+        "id": "d25697a1e9d85b25",
+        "type": "ui_switch",
+        "z": "78480a0d5830e0da",
+        "name": "Ổ điện 2",
+        "label": "Ổ điện 2",
+        "tooltip": "",
+        "group": "6c48f6e2975474a9",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "1",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "On",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "Off",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 600,
+        "y": 780,
+        "wires": [
+            [
+                "23c5c072ae099143"
+            ]
+        ]
+    },
+    {
+        "id": "23c5c072ae099143",
+        "type": "function",
+        "z": "78480a0d5830e0da",
+        "name": "function 3",
+        "func": "// Gộp topic (số 1) và payload (On/Off) thành một chuỗi\nmsg.payload = msg.topic + \":\" + msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 780,
+        "wires": [
+            [
+                "4f77d3609d667e2e"
+            ]
+        ]
+    },
+    {
+        "id": "c4810a4001b82cc5",
+        "type": "function",
+        "z": "78480a0d5830e0da",
+        "name": "function 4",
+        "func": "var d = new Date();\nvar day = d.getDate();\nvar month = d.getMonth() + 1;\nvar year = d.getFullYear();\nvar today = day + \"/\" + month + \"/\" + year;\n\nvar recorded_date = msg.payload.toString().trim();\nvar energy = msg.energy;\n\nif (today !== recorded_date) {\n    // SỬA Ở ĐÂY:\n    // Output 1: Gửi 'today'\n    // Output 2: Gửi lần lượt 0:reset, 1:reset, 2:reset\n    return [\n        { payload: today },\n        [\n            { payload: \"0:reset\" },\n            { payload: \"1:reset\" },\n            { payload: \"2:reset\" }\n        ]\n    ];\n}\n\nif (energy !== undefined) {\n    return [null, { payload: energy }];\n}\n// Nếu trùng nhau thì thôi\nreturn null;",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 740,
+        "wires": [
+            [
+                "3f4254eb3b038633"
+            ],
+            [
+                "4f77d3609d667e2e"
+            ]
+        ]
+    },
+    {
+        "id": "3f4254eb3b038633",
+        "type": "file",
+        "z": "78480a0d5830e0da",
+        "name": "Lưu ngày",
+        "filename": "D:/New folder (2)/last_date.txt",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 740,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2151f539319c5998",
+        "type": "switch",
+        "z": "78480a0d5830e0da",
+        "name": "Check device",
+        "property": "payload.Device",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 320,
+        "y": 400,
+        "wires": [
+            [
+                "f6411c1d67ac4600",
+                "b1b97cd13192fb04",
+                "7a1b8b6ed73505ba",
+                "bc7605e6810863c5",
+                "47d41da8cecb7be4",
+                "eb5b96e31f584829",
+                "9e9e9348119da7d8"
+            ],
+            [
+                "e713306d2677194b",
+                "1055a2ea6627cfd0",
+                "d4339d382a7c68b3",
+                "9764c10c8c9529d1",
+                "0e18b6b92e7f1889",
+                "6931eedbbf1460d5",
+                "173fa06bf0cef26d"
+            ],
+            [
+                "cf5a1b72a237f7fc",
+                "2477e2ab6bf8920e",
+                "1f11fe19b2a1e760",
+                "0a0c41358399455d",
+                "59af78c9e8d70dfd",
+                "a217a5432e10a456",
+                "f1e8bd3092440702"
+            ]
+        ]
+    },
+    {
+        "id": "bd53f3ccd871cd16",
+        "type": "ui_switch",
+        "z": "78480a0d5830e0da",
+        "name": "Ổ điện 3",
+        "label": "Ổ điện 3",
+        "tooltip": "",
+        "group": "6c48f6e2975474a9",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "2",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "On",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "Off",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 600,
+        "y": 900,
+        "wires": [
+            [
+                "857d6c7c323db61a"
+            ]
+        ]
+    },
+    {
+        "id": "857d6c7c323db61a",
+        "type": "function",
+        "z": "78480a0d5830e0da",
+        "name": "function 6",
+        "func": "// Gộp topic (số 1) và payload (On/Off) thành một chuỗi\nmsg.payload = msg.topic + \":\" + msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 900,
+        "wires": [
+            [
+                "4f77d3609d667e2e"
+            ]
+        ]
+    },
+    {
+        "id": "9e9e9348119da7d8",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "Volts",
+        "entityConfig": "0d6147651bea3418",
+        "version": 0,
+        "state": "payload.U",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 450,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b5e87ec6dc1da7fc",
+        "type": "server-state-changed",
+        "z": "78480a0d5830e0da",
+        "d": true,
+        "name": "",
+        "server": "99c975fb58565257",
+        "version": 6,
+        "outputs": 1,
+        "exposeAsEntityConfig": "",
+        "entities": {
+            "entity": [
+                "sensor.sun_next_dawn"
+            ],
+            "substring": [],
+            "regex": []
+        },
+        "outputInitially": false,
+        "stateType": "str",
+        "ifState": "",
+        "ifStateType": "str",
+        "ifStateOperator": "is",
+        "outputOnlyOnStateChange": true,
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "ignorePrevStateNull": false,
+        "ignorePrevStateUnknown": false,
+        "ignorePrevStateUnavailable": false,
+        "ignoreCurrentStateUnknown": false,
+        "ignoreCurrentStateUnavailable": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "string",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "eventData"
+            },
+            {
+                "property": "topic",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "triggerId"
+            }
+        ],
+        "x": 1570,
+        "y": 1060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "36bfb2f1adcd3395",
+        "type": "ha-switch",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "version": 0,
+        "debugenabled": false,
+        "inputs": 1,
+        "outputs": 2,
+        "entityConfig": "6355618a9877904c",
+        "enableInput": true,
+        "outputOnStateChange": true,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "true",
+                "valueType": "bool"
+            },
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "false",
+                "valueType": "bool"
+            }
+        ],
+        "x": 670,
+        "y": 240,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "7a1b8b6ed73505ba",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "Energy",
+        "entityConfig": "f1a4169e29c3c355",
+        "version": 0,
+        "state": "payload.Energy",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 800,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eb5b96e31f584829",
+        "type": "change",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "enable",
+                "pt": "msg",
+                "to": "payload.State",
+                "tot": "msg"
+            },
+            {
+                "t": "change",
+                "p": "enable",
+                "pt": "msg",
+                "from": "On",
+                "fromt": "str",
+                "to": "true",
+                "tot": "bool"
+            },
+            {
+                "t": "change",
+                "p": "enable",
+                "pt": "msg",
+                "from": "Off",
+                "fromt": "str",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 520,
+        "y": 240,
+        "wires": [
+            [
+                "36bfb2f1adcd3395"
+            ]
+        ]
+    },
+    {
+        "id": "02848bfd1501285c",
+        "type": "server-state-changed",
+        "z": "78480a0d5830e0da",
+        "name": "State",
+        "server": "99c975fb58565257",
+        "version": 6,
+        "outputs": 1,
+        "exposeAsEntityConfig": "",
+        "entities": {
+            "entity": [
+                "switch.o_cam_1"
+            ],
+            "substring": [],
+            "regex": []
+        },
+        "outputInitially": false,
+        "stateType": "str",
+        "ifState": "",
+        "ifStateType": "str",
+        "ifStateOperator": "is",
+        "outputOnlyOnStateChange": true,
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "ignorePrevStateNull": false,
+        "ignorePrevStateUnknown": false,
+        "ignorePrevStateUnavailable": false,
+        "ignoreCurrentStateUnknown": false,
+        "ignoreCurrentStateUnavailable": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "string",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "eventData"
+            },
+            {
+                "property": "topic",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "triggerId"
+            }
+        ],
+        "x": 290,
+        "y": 680,
+        "wires": [
+            [
+                "f178f3844fc9f862"
+            ]
+        ]
+    },
+    {
+        "id": "f6411c1d67ac4600",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "I",
+        "entityConfig": "4e468087dec15c63",
+        "version": 0,
+        "state": "payload.I",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 590,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b1b97cd13192fb04",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "P",
+        "entityConfig": "dbe0fb586c4f9fc9",
+        "version": 0,
+        "state": "payload.P",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 690,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bc7605e6810863c5",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "PF",
+        "entityConfig": "d3392c3cf16f7109",
+        "version": 0,
+        "state": "payload.PF",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1010,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f178f3844fc9f862",
+        "type": "change",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "rules": [
+            {
+                "t": "change",
+                "p": "payload",
+                "pt": "msg",
+                "from": "on",
+                "fromt": "str",
+                "to": "On",
+                "tot": "str"
+            },
+            {
+                "t": "change",
+                "p": "payload",
+                "pt": "msg",
+                "from": "off",
+                "fromt": "str",
+                "to": "Off",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 680,
+        "wires": [
+            [
+                "0a6148b289831b9d"
+            ]
+        ]
+    },
+    {
+        "id": "47d41da8cecb7be4",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "f",
+        "entityConfig": "e47a9ed3487a16f0",
+        "version": 0,
+        "state": "payload.f",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 910,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "080f90e8199e5804",
+        "type": "file in",
+        "z": "78480a0d5830e0da",
+        "name": "Check ngày",
+        "filename": "D:\\New folder (2)\\last_date.txt",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 450,
+        "y": 720,
+        "wires": [
+            [
+                "c4810a4001b82cc5"
+            ]
+        ]
+    },
+    {
+        "id": "e78facb00a0fa8e0",
+        "type": "inject",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 290,
+        "y": 720,
+        "wires": [
+            [
+                "080f90e8199e5804"
+            ]
+        ]
+    },
+    {
+        "id": "c4562bdff6c2f67d",
+        "type": "device",
+        "z": "78480a0d5830e0da",
+        "name": "Ổ điện 1",
+        "appcredential": "40b1018fb551de4c",
+        "deviceid": "69352d9b6dbd335b28ef8aca",
+        "x": 120,
+        "y": 1520,
+        "wires": [
+            [
+                "1164c53b900b815c",
+                "9856220a98c2a225"
+            ]
+        ]
+    },
+    {
+        "id": "1164c53b900b815c",
+        "type": "change",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.value.state",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 1580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9856220a98c2a225",
+        "type": "function",
+        "z": "78480a0d5830e0da",
+        "name": "function 1",
+        "func": "msg.payload.success=true;\nmsg.payload.message = \"OK\";\nreturn msg.payload;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 1520,
+        "wires": [
+            [
+                "e6fdf69cd432b3e5"
+            ]
+        ]
+    },
+    {
+        "id": "e6fdf69cd432b3e5",
+        "type": "response",
+        "z": "78480a0d5830e0da",
+        "x": 620,
+        "y": 1520,
+        "wires": []
+    },
+    {
+        "id": "e713306d2677194b",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "Volts 1",
+        "entityConfig": "375a8b2714be530e",
+        "version": 0,
+        "state": "payload.U",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 590,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d1621e4912d3f39c",
+        "type": "ha-switch",
+        "z": "78480a0d5830e0da",
+        "name": "Ổ cắm 2",
+        "version": 0,
+        "debugenabled": false,
+        "inputs": 1,
+        "outputs": 2,
+        "entityConfig": "eda56d64c51cb429",
+        "enableInput": true,
+        "outputOnStateChange": true,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "true",
+                "valueType": "bool"
+            },
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "false",
+                "valueType": "bool"
+            }
+        ],
+        "x": 940,
+        "y": 400,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "9764c10c8c9529d1",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "Energy 1",
+        "entityConfig": "c83c8cbf3047cffb",
+        "version": 0,
+        "state": "payload.Energy",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 900,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "173fa06bf0cef26d",
+        "type": "change",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "enable",
+                "pt": "msg",
+                "to": "payload.State",
+                "tot": "msg"
+            },
+            {
+                "t": "change",
+                "p": "enable",
+                "pt": "msg",
+                "from": "On",
+                "fromt": "str",
+                "to": "true",
+                "tot": "bool"
+            },
+            {
+                "t": "change",
+                "p": "enable",
+                "pt": "msg",
+                "from": "Off",
+                "fromt": "str",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 780,
+        "y": 400,
+        "wires": [
+            [
+                "d1621e4912d3f39c"
+            ]
+        ]
+    },
+    {
+        "id": "1055a2ea6627cfd0",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "I 1",
+        "entityConfig": "bf7dd884d043c73e",
+        "version": 0,
+        "state": "payload.I",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 690,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d4339d382a7c68b3",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "P 1",
+        "entityConfig": "954dc414628fd2ce",
+        "version": 0,
+        "state": "payload.P",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 790,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6931eedbbf1460d5",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "PF 1",
+        "entityConfig": "d59d1c04d3cb4a6f",
+        "version": 0,
+        "state": "payload.PF",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1110,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0e18b6b92e7f1889",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "f 1",
+        "entityConfig": "58bab2e9bc40f82c",
+        "version": 0,
+        "state": "payload.f",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1010,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d335ea731955c0d5",
+        "type": "server-state-changed",
+        "z": "78480a0d5830e0da",
+        "name": "State 1",
+        "server": "99c975fb58565257",
+        "version": 6,
+        "outputs": 1,
+        "exposeAsEntityConfig": "",
+        "entities": {
+            "entity": [
+                "switch.o_cam_2"
+            ],
+            "substring": [],
+            "regex": []
+        },
+        "outputInitially": false,
+        "stateType": "str",
+        "ifState": "",
+        "ifStateType": "str",
+        "ifStateOperator": "is",
+        "outputOnlyOnStateChange": true,
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "ignorePrevStateNull": false,
+        "ignorePrevStateUnknown": false,
+        "ignorePrevStateUnavailable": false,
+        "ignoreCurrentStateUnknown": false,
+        "ignoreCurrentStateUnavailable": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "string",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "eventData"
+            },
+            {
+                "property": "topic",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "triggerId"
+            }
+        ],
+        "x": 290,
+        "y": 780,
+        "wires": [
+            [
+                "1a01a6b47594c403"
+            ]
+        ]
+    },
+    {
+        "id": "1a01a6b47594c403",
+        "type": "change",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "rules": [
+            {
+                "t": "change",
+                "p": "payload",
+                "pt": "msg",
+                "from": "on",
+                "fromt": "str",
+                "to": "On",
+                "tot": "str"
+            },
+            {
+                "t": "change",
+                "p": "payload",
+                "pt": "msg",
+                "from": "off",
+                "fromt": "str",
+                "to": "Off",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 780,
+        "wires": [
+            [
+                "d25697a1e9d85b25"
+            ]
+        ]
+    },
+    {
+        "id": "cf5a1b72a237f7fc",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "Volts 2",
+        "entityConfig": "8c5929f4686e4fad",
+        "version": 0,
+        "state": "payload.U",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 490,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7ee740e8c5d70537",
+        "type": "ha-switch",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "version": 0,
+        "debugenabled": false,
+        "inputs": 1,
+        "outputs": 2,
+        "entityConfig": "aad9e92ed34b61b0",
+        "enableInput": true,
+        "outputOnStateChange": true,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "true",
+                "valueType": "bool"
+            },
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "false",
+                "valueType": "bool"
+            }
+        ],
+        "x": 650,
+        "y": 540,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "59af78c9e8d70dfd",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "Energy 2",
+        "entityConfig": "d404d44b38ab85f5",
+        "version": 0,
+        "state": "payload.Energy",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 800,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2477e2ab6bf8920e",
+        "type": "change",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "enable",
+                "pt": "msg",
+                "to": "payload.State",
+                "tot": "msg"
+            },
+            {
+                "t": "change",
+                "p": "enable",
+                "pt": "msg",
+                "from": "On",
+                "fromt": "str",
+                "to": "true",
+                "tot": "bool"
+            },
+            {
+                "t": "change",
+                "p": "enable",
+                "pt": "msg",
+                "from": "Off",
+                "fromt": "str",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 500,
+        "y": 540,
+        "wires": [
+            [
+                "7ee740e8c5d70537"
+            ]
+        ]
+    },
+    {
+        "id": "1f11fe19b2a1e760",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "I 2",
+        "entityConfig": "241588728d8f6616",
+        "version": 0,
+        "state": "payload.I",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 590,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0a0c41358399455d",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "P 2",
+        "entityConfig": "1d7d6683ad18df29",
+        "version": 0,
+        "state": "payload.P",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 690,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f1e8bd3092440702",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "PF",
+        "entityConfig": "96073afa821f4a3b",
+        "version": 0,
+        "state": "payload.PF",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 1010,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a217a5432e10a456",
+        "type": "ha-sensor",
+        "z": "78480a0d5830e0da",
+        "name": "f 2",
+        "entityConfig": "d57e54e51dafb795",
+        "version": 0,
+        "state": "payload.f",
+        "stateType": "msg",
+        "attributes": [],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 910,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e7695234eb83e24a",
+        "type": "server-state-changed",
+        "z": "78480a0d5830e0da",
+        "name": "State 2",
+        "server": "99c975fb58565257",
+        "version": 6,
+        "outputs": 1,
+        "exposeAsEntityConfig": "",
+        "entities": {
+            "entity": [
+                "switch.o_cam_2"
+            ],
+            "substring": [],
+            "regex": []
+        },
+        "outputInitially": false,
+        "stateType": "str",
+        "ifState": "",
+        "ifStateType": "str",
+        "ifStateOperator": "is",
+        "outputOnlyOnStateChange": true,
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "ignorePrevStateNull": false,
+        "ignorePrevStateUnknown": false,
+        "ignorePrevStateUnavailable": false,
+        "ignoreCurrentStateUnknown": false,
+        "ignoreCurrentStateUnavailable": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "string",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "eventData"
+            },
+            {
+                "property": "topic",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "triggerId"
+            }
+        ],
+        "x": 290,
+        "y": 900,
+        "wires": [
+            [
+                "09ad9364a38dfbb8"
+            ]
+        ]
+    },
+    {
+        "id": "09ad9364a38dfbb8",
+        "type": "change",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "rules": [
+            {
+                "t": "change",
+                "p": "payload",
+                "pt": "msg",
+                "from": "on",
+                "fromt": "str",
+                "to": "On",
+                "tot": "str"
+            },
+            {
+                "t": "change",
+                "p": "payload",
+                "pt": "msg",
+                "from": "off",
+                "fromt": "str",
+                "to": "Off",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 900,
+        "wires": [
+            [
+                "bd53f3ccd871cd16"
+            ]
+        ]
+    },
+    {
+        "id": "0467668a7f2f4139",
+        "type": "inject",
+        "z": "78480a0d5830e0da",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0:reset",
+        "payloadType": "str",
+        "x": 990,
+        "y": 680,
+        "wires": [
+            [
+                "4f77d3609d667e2e"
+            ]
+        ]
+    },
+    {
+        "id": "b67a3d5ab78b619f",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "b22faecbf48544dcaf34b3dcebfa352b.s1.eu.hivemq.cloud",
+        "port": "8883",
+        "tls": "",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": true,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "50f6a985550c885c",
+        "type": "ui_group",
+        "name": "Led",
+        "tab": "23aff14d423a9ed0",
+        "order": 2,
+        "disp": true,
+        "width": 8,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "6c48f6e2975474a9",
+        "type": "ui_group",
+        "name": "Led",
+        "tab": "23aff14d423a9ed0",
+        "order": 1,
+        "disp": true,
+        "width": 8,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "0d6147651bea3418",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a263edbcab95cdec",
+        "name": "U",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "Điện áp"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "voltage"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "V"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "99c975fb58565257",
+        "type": "server",
+        "name": "Home Assistant",
+        "version": 6,
+        "addon": false,
+        "rejectUnauthorizedCerts": true,
+        "ha_boolean": [
+            "y",
+            "yes",
+            "true",
+            "on",
+            "home",
+            "open"
+        ],
+        "connectionDelay": true,
+        "cacheJson": true,
+        "heartbeat": false,
+        "heartbeatInterval": 30,
+        "areaSelector": "friendlyName",
+        "deviceSelector": "friendlyName",
+        "entitySelector": "friendlyName",
+        "statusSeparator": ": ",
+        "statusYear": "hidden",
+        "statusMonth": "short",
+        "statusDay": "numeric",
+        "statusHourCycle": "default",
+        "statusTimeFormat": "h:m",
+        "enableGlobalContextStore": false
+    },
+    {
+        "id": "6355618a9877904c",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a263edbcab95cdec",
+        "name": "Ổ cắm 1",
+        "version": 6,
+        "entityType": "switch",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "Ổ cắm 1"
+            },
+            {
+                "property": "icon",
+                "value": "mdi:power-socket-eu"
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "switch"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "f1a4169e29c3c355",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a263edbcab95cdec",
+        "name": "Energy",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "Energy"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "energy"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "kWh"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "4e468087dec15c63",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a263edbcab95cdec",
+        "name": "I",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "I"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "current"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "A"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "dbe0fb586c4f9fc9",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a263edbcab95cdec",
+        "name": "P",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "P"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "power"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "W"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "d3392c3cf16f7109",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a263edbcab95cdec",
+        "name": "PF",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "PF"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "power_factor"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "%"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "e47a9ed3487a16f0",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a263edbcab95cdec",
+        "name": "f",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "f"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "frequency"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "Hz"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "40b1018fb551de4c",
+        "type": "appcredential",
+        "appkey": "373990a9-4982-4c9b-807b-6a1d5e7867ee",
+        "appsecret": "cf90c0f9-a5c2-4a21-9f48-045131c262cf-85f1fb65-7b28-4adf-8b1d-c3b2b49d04e8"
+    },
+    {
+        "id": "375a8b2714be530e",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a9e66f56d1892c75",
+        "name": "U 1",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "U 1"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "voltage"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "V"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "eda56d64c51cb429",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a9e66f56d1892c75",
+        "name": "Ổ cắm 2",
+        "version": 6,
+        "entityType": "switch",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "Ổ cắm 2"
+            },
+            {
+                "property": "icon",
+                "value": "mdi:power-socket-eu"
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "switch"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "c83c8cbf3047cffb",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a9e66f56d1892c75",
+        "name": "Energy 1",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "Energy 1"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "energy"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "kWh"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "bf7dd884d043c73e",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a9e66f56d1892c75",
+        "name": "I 1",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "I 1"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "current"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "A"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "954dc414628fd2ce",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a9e66f56d1892c75",
+        "name": "P 1",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "P 1"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "power"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "W"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "d59d1c04d3cb4a6f",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a9e66f56d1892c75",
+        "name": "PF 1",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "PF 1"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "power_factor"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "%"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "58bab2e9bc40f82c",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "a9e66f56d1892c75",
+        "name": "f 1",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "f 1"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "frequency"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "Hz"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "8c5929f4686e4fad",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "b559c5353c24824a",
+        "name": "U 2",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "U 2"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "voltage"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "V"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "aad9e92ed34b61b0",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "b559c5353c24824a",
+        "name": "Ổ cắm 3",
+        "version": 6,
+        "entityType": "switch",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "Ổ cắm 3"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "switch"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "d404d44b38ab85f5",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "b559c5353c24824a",
+        "name": "Energy 2",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "Energy 2"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "energy"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "kWh"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "241588728d8f6616",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "b559c5353c24824a",
+        "name": "I 2",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "I 2"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "current"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "A"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "1d7d6683ad18df29",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "b559c5353c24824a",
+        "name": "P 2",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "P 2"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "power"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "W"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "96073afa821f4a3b",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "b559c5353c24824a",
+        "name": "PF 2",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "PF 2"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "power_factor"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "%"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "d57e54e51dafb795",
+        "type": "ha-entity-config",
+        "server": "99c975fb58565257",
+        "deviceConfig": "b559c5353c24824a",
+        "name": "f 2",
+        "version": 6,
+        "entityType": "sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "f 2"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": "frequency"
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "Hz"
+            },
+            {
+                "property": "state_class",
+                "value": "measurement"
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "23aff14d423a9ed0",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "a263edbcab95cdec",
+        "type": "ha-device-config",
+        "name": "Smart power station",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "a9e66f56d1892c75",
+        "type": "ha-device-config",
+        "name": "Smart power station 1",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "b559c5353c24824a",
+        "type": "ha-device-config",
+        "name": "Smart powet station 2",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    },
+    {
+        "id": "375af8988d856b3f",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6",
+            "node-red-contrib-home-assistant-websocket": "0.80.3",
+            "@sinricpro/node-red-contrib-sinric-pro": "1.5.2"
+        }
+    }
+]
